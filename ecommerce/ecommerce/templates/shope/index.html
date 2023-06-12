@@ -1,0 +1,135 @@
+
+
+{% extends 'shope/base.html' %}
+
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <form class="card card-sm">
+            <div class="card-body row no-gutters align-items-center">
+                <div class="col">
+                
+                  <input type="search"  placeholder="Entrer le produit" name="item-name" class="form-control form-control-borderless">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-success">Recherche</button>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+{% comment %} pour affficher les produit {% endcomment %}
+    <div class="row">
+        {% for product in product_obj %}
+        <div class="col-md-3">
+            <div class="card">
+                <img src=" {{ product.image }} "width= "250px" height="250px" alt="" class="card-img_top">
+                <div class="card-body">
+                    <div id="aa{{product.id}}" class="card-title"> {{product.title}} </div>
+                    <div id="price{{product.id}}" style="color: orange" class="card-text"> {{ product.price }} <strong>€</strong> </div>
+                    <a href="{{ product.id }} " class="btn btn-warning">Voire</a>
+                    <button id="{{product.id}}" class="btn ted btn-success"> Ajouter</button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+        <div class="row">
+            <div class="mt-3">
+                <div class="col-md-3 offset-md-4">
+                    <ul class="pagination">
+                        {% if product_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ product_obj.previous_page_number }}">Precedent</a>
+                        </li>
+                        {% endif %}
+
+                        <li class="page-item active">
+                            <a class="page-link" href="?page= {{ product_obj.number }} "> {{ product_obj.number }} </a>
+                        </li>
+
+                        {% if product_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ product_obj.next_page_number }}">Suivant</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+{% endblock content %}
+
+
+{% block js %}
+
+<script type="text/javascript">
+    
+    if(localStorage.getItem('panier' ) == null){
+        var panier ={};
+
+    }else{
+        panier = JSON.parse(localStorage.getItem('panier'));
+    }
+    $(document).on('click','.ted',function(){
+        console.log('appler AfficherListe');
+        var item_id = this.id.toString();
+        
+        if(panier[item_id]!=undefined){
+            quantite = panier[item_id][0] +1;
+            panier[item_id][0] = quantite;
+            panier[item_id][2] += parseFloat(document.getElementById('price'+item_id).innerHTML);
+        }else{
+            quantite = 1;
+            prix=  parseFloat(document.getElementById('price'+item_id).innerHTML);
+            name = document.getElementById('aa' + item_id).innerHTML;
+            panier[item_id] = [quantite, name,prix];
+            
+        }
+        console.log(panier);
+        localStorage.setItem('panier', JSON.stringify(panier));
+
+        document.getElementById('panier').innerHTML = "Panier(" + Object.keys(panier).length +")";
+        console.log();
+    });
+ 
+AfficherListe(panier);
+
+function AfficherListe(panier) {
+    // Vérifier si le panier est vide
+    if (Object.keys(panier).length === 0) {
+      document.getElementById('panier').setAttribute('data-bs-content', 'Votre panier est vide.');
+      return;
+    }
+  
+    var panierString = "<h5>Voici votre liste</h5>";
+    var index = 1;
+  
+    // Parcourir les éléments du panier
+    for (var x in panier) {
+      panierString += index + ' . '; 
+      panierString += document.getElementById('aa' + x).innerHTML + ' Qte: ' + panier[x][0] + '<br>';
+      
+      index++;
+    }
+    
+    panierString +="<a href='/checkout' class='btn btn-primary'>Checkout</a> "; //le boutton pour nous conduire vers la liste des produits.
+
+
+    // Mettre à jour le contenu du popover
+    document.getElementById('panier').setAttribute('data-bs-content', panierString);
+  
+    // Créer une nouvelle instance de Popover
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+      return new bootstrap.Popover(popoverTriggerEl);
+    });
+  }
+  
+</script>
+
+{% endblock  %}
+

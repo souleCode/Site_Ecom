@@ -1,0 +1,118 @@
+{% extends 'shope/base.html' %}
+
+
+{% block content %}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <ul class="list-group" id="item-list">
+            <h3 class="text-center"> Voici panier :</h3>
+        </ul>
+    </div>
+</div>
+
+
+<br>
+<br>
+<br>
+
+<h3 class="text-center"> Vos informations :</h3><hr>
+<div class="row">
+    
+    <div class="col-md-12">
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" id="items" name="items">
+            <div class="form-row row">
+              <div class="form-group col-md-6">
+                <label for="inputEmail4">Nom</label>
+                <input type="text" class="form-control" id="nom" name="nom" placeholder="Nom">
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="inputEmail">E-mail</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="souleymaneform.2026@gmail.com">
+              </div>
+             </div>
+
+            <div class="form-group ">
+              <label for="inputAddress">Address</label>
+              <input type="text" class="form-control" id="address" name="address" placeholder="256 BP06 Ouagadougou 07 ">
+            </div>
+            
+            <div class="form-row row">
+              <div class="form-group col-md-6">
+                <label for="inputCity">Ville</label>
+                <input type="text" class="form-control" name="ville" id="ville">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="inputState">Pays</label>
+                <select id="pays" name="pays" class="form-control">
+                  <option selected>Burkina-Faso</option>
+                  <option>Maroc</option>
+                  <option>Mali</option>
+                  <option>Cote d'Ivoire</option>
+                  <option>France</option>
+                  <option>Benin</option>
+                  <option>Cameroun</option>
+                  <option>Togo</option>
+                  <option>Tchad</option>
+                </select>
+              </div>
+              <div class="form-group col-md-2">
+                <label for="inputZip">Zip</label>
+                <input name="zipecode" id="zipecode" type="text" class="form-control">
+              </div>
+            </div>
+
+            <div class="form-group col-md-2">
+                <label for="inputZip">Somme totale a payer</label>
+                <input name="total" id="total" type="text" class=" bg-dark text-warning form-control" readonly>
+
+              </div>
+        
+            <button type="submit" class="btn btn-primary mt-3 mb-3">Commander</button>
+          </form>
+    </div>
+</div>
+
+{% endblock  %}
+
+{% block js %}
+    <script type="text/javascript">
+        if(localStorage.getItem('panier')==null){
+            var panier = {};
+
+        }else{
+            panier = JSON.parse(localStorage.getItem('panier'));
+        }
+        var total =0;
+        var nombre =0;
+        for( item in panier){
+            let nom = panier[item][1];
+            let quantite = panier[item][0];
+            let prix = panier[item][2];
+            nombre += quantite;
+            total+= prix;
+            
+            let itemString = `<li class="list-group-item d-flex justify-content-between align-items-center">
+                ${nom}
+                <span class="badge bg-primary rounded-pill">Qte: ${quantite} </span>
+                <span class="badge bg-warning rounded-pill"> ${prix} €</span>
+              </li>`;
+              $('#item-list').append(itemString);
+        }
+
+         
+        let itemNombre = `<li class="list-group-item d-flex justify-content-between align-items-center">
+            <b class="bg-danger" > PRIX ET QUANTITE TOTALE: </b>
+            <span class="badge bg-danger rounded-pill">Qte: ${nombre} </span>
+            <span class="badge bg-danger rounded-pill">Totale ${total}€ </span>
+          </li>`;
+          $('#item-list').append(itemNombre);
+          $('#total').val(total + '€');
+        $('#items').val(JSON.stringify(panier))
+    </script>
+
+{% endblock  %}

@@ -1,0 +1,28 @@
+
+
+{% extends 'shope/base.html' %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-6">
+            <div>
+                <img src=" {{ product_obj.image }}" width= "500px" height="500px" alt="">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="text-warning display-3">
+                {{ product_obj.title}}
+            </div>
+        
+        <div class="text-danger display-5">
+           <h5>Le prix de ce produit est :</h5> {{ product_obj.price}}€
+        </div>
+        <div>
+            <h5>Voici la description du produit :</h5>
+            {{  product_obj.description}}
+        <a href="#"><button class="btn btn-success">Acheter</button></a>
+    </div>
+    </div>
+
+{% endblock  %}
