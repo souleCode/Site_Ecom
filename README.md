@@ -33,3 +33,17 @@ Ce projet illustre la création d’un site e-commerce complet, prêt à être d
    ```bash
    git clone https://github.com/ton-utilisateur/django-ecommerce.git
    cd django-ecommerce
+2. **Installer les independances**
+ ````bash
+   pip install -r requirements.txt
+
+````
+3. **Migrer la base de données**
+   ````bash
+   python manage.py migrate
+   ````
+4. **Lancer le server Django**
+   ````bash
+   python manage.py runserver
+````
+
