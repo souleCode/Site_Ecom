@@ -45,5 +45,5 @@ Ce projet illustre la création d’un site e-commerce complet, prêt à être d
 4. **Lancer le server Django**
    ````bash
    python manage.py runserver
-````
+
 
